@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(alembic revision:*)",
+      "Bash(pip install:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(python:*)",
+      "Bash(where:*)",
+      "Bash(docker:*)",
+      "Bash(alembic upgrade:*)",
+      "Bash(MSYS_NO_PATHCONV=1 docker run:*)"
     ]
   }
 }

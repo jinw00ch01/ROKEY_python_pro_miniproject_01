@@ -11,6 +11,7 @@
 - [API 엔드포인트](#api-엔드포인트)
 - [데이터베이스 모델](#데이터베이스-모델)
 - [주요 기능](#주요-기능)
+- [개발 현황](#개발-현황)
 
 ---
 
@@ -27,6 +28,7 @@ Py-SMS는 교육 기관을 위한 종합적인 학생 관리 시스템입니다.
 - **PDF 리포트**: ReportLab을 활용한 성적표 PDF 생성
 - **비동기 작업**: Celery + Redis를 활용한 백그라운드 작업 처리
 - **Docker 지원**: Docker Compose를 통한 간편한 배포
+- **자동 API 문서**: Swagger UI & ReDoc 자동 생성
 
 ---
 
@@ -37,7 +39,7 @@ Py-SMS는 교육 기관을 위한 종합적인 학생 관리 시스템입니다.
 | **언어** | Python 3.11+ |
 | **웹 프레임워크** | FastAPI (비동기 지원) |
 | **서버** | Uvicorn |
-| **데이터베이스** | PostgreSQL |
+| **데이터베이스** | PostgreSQL 15 |
 | **ORM** | SQLAlchemy 2.0+ (Mapped, mapped_column 사용) |
 | **마이그레이션** | Alembic |
 | **유효성 검사** | Pydantic V2 |
@@ -101,30 +103,84 @@ Py-SMS/
 │       └── attendance.py          # 출석 서비스 (확장용)
 ├── alembic/
 │   ├── env.py                     # Alembic 환경 설정
-│   ├── script.py.mako             # 마이그레이션 템플릿
-│   └── versions/                  # 마이그레이션 버전 파일
+│   └── versions/
+│       └── 001_initial_migration.py  # 초기 마이그레이션
 ├── tests/                         # 테스트 코드
 ├── .env                           # 환경 변수
 ├── .gitignore
 ├── alembic.ini                    # Alembic 설정
 ├── docker-compose.yml             # Docker Compose 설정
 ├── Dockerfile                     # Docker 이미지 빌드
-└── requirements.txt               # Python 의존성
+├── requirements.txt               # Python 의존성 (전체)
+└── requirements-core.txt          # Python 의존성 (AI 제외)
 ```
 
 ---
 
 ## 설치 및 실행
 
-### 방법 1: Docker Compose (권장)
+### 방법 1: 로컬 실행 (권장)
 
-가장 간편한 방법으로, 모든 서비스가 자동으로 설정됩니다.
+#### 사전 요구사항
+
+- Python 3.11 이상
+- Docker Desktop (PostgreSQL & Redis용)
+
+#### 설치 단계
 
 ```bash
 # 1. 프로젝트 디렉토리로 이동
 cd Py-SMS
 
-# 2. Docker Compose로 모든 서비스 실행
+# 2. 가상환경 생성 및 활성화
+python -m venv venv
+
+# Windows (Git Bash)
+source venv/Scripts/activate
+
+# macOS/Linux
+source venv/bin/activate
+
+# 3. 의존성 설치 (AI 패키지 제외)
+pip install -r requirements-core.txt
+pip install email-validator  # Pydantic EmailStr 지원
+
+# 4. PostgreSQL & Redis 실행 (Docker)
+docker-compose up -d db redis
+
+# 5. 데이터베이스 마이그레이션 (Docker 컨테이너 사용)
+MSYS_NO_PATHCONV=1 docker run --rm \
+  --network py-sms_default \
+  -v "/c/ROKEY_2526/python_export/Py-SMS:/app" \
+  -w /app \
+  -e DATABASE_URL="postgresql://postgres:postgres@pysms-db:5432/pysms" \
+  python:3.11-slim bash -c \
+  "pip install -q alembic sqlalchemy psycopg2-binary pydantic pydantic-settings && alembic upgrade head"
+
+# 6. 환경 변수 설정
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pysms"
+export REDIS_URL="redis://localhost:6379/0"
+
+# 7. 서버 실행
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**실행되는 서비스:**
+- **FastAPI**: http://localhost:8000
+- **PostgreSQL** (Docker): localhost:5432
+- **Redis** (Docker): localhost:6379
+
+---
+
+### 방법 2: Docker Compose (전체 스택)
+
+모든 서비스를 Docker로 실행:
+
+```bash
+# 1. 프로젝트 디렉토리로 이동
+cd Py-SMS
+
+# 2. 모든 서비스 실행
 docker-compose up -d
 
 # 3. 로그 확인
@@ -141,45 +197,6 @@ docker-compose down
 - **celery** (백그라운드 워커)
 
 ---
-
-### 방법 2: 로컬 실행
-
-#### 사전 요구사항
-
-- Python 3.11 이상
-- PostgreSQL 15
-- Redis 7
-
-#### 설치 단계
-
-```bash
-# 1. 프로젝트 디렉토리로 이동
-cd Py-SMS
-
-# 2. 가상환경 생성 및 활성화
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS/Linux
-source venv/bin/activate
-
-# 3. 의존성 설치
-pip install -r requirements.txt
-
-# 4. 환경 변수 설정 (.env 파일 수정)
-# DATABASE_URL, REDIS_URL, SECRET_KEY 등 설정
-
-# 5. 데이터베이스 마이그레이션
-alembic upgrade head
-
-# 6. 서버 실행
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 7. (선택) Celery 워커 실행 (별도 터미널)
-celery -A app.services.celery_worker worker --loglevel=info
-```
 
 ### 환경 변수 (.env)
 
@@ -208,6 +225,7 @@ DEBUG=True
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/health
 
 ---
 
@@ -225,7 +243,7 @@ DEBUG=True
 
 | 메서드 | 엔드포인트 | 설명 |
 |--------|-----------|------|
-| GET | `/api/v1/students` | 학생 목록 조회 |
+| GET | `/api/v1/students` | 학생 목록 조회 (페이지네이션) |
 | GET | `/api/v1/students/{id}` | 학생 상세 조회 |
 | POST | `/api/v1/students` | 학생 등록 |
 | PUT | `/api/v1/students/{id}` | 학생 정보 수정 |
@@ -235,7 +253,7 @@ DEBUG=True
 
 | 메서드 | 엔드포인트 | 설명 |
 |--------|-----------|------|
-| GET | `/api/v1/courses` | 과목 목록 조회 |
+| GET | `/api/v1/courses` | 과목 목록 조회 (페이지네이션) |
 | GET | `/api/v1/courses/{id}` | 과목 상세 조회 |
 | POST | `/api/v1/courses` | 과목 등록 |
 | PUT | `/api/v1/courses/{id}` | 과목 정보 수정 |
@@ -379,34 +397,121 @@ ReportLab을 활용한 성적표 생성:
 
 ## 사용 예시
 
-### 1. 회원가입 및 로그인
+### Swagger UI 사용 (권장)
+
+1. 브라우저에서 http://localhost:8000/docs 접속
+2. **POST /api/v1/auth/register** - 회원가입
+3. **POST /api/v1/auth/login** - 로그인 후 토큰 복사
+4. 상단 **Authorize 🔓** 버튼 클릭 → `Bearer {토큰}` 입력
+5. **POST /api/v1/students** - 학생 등록
+6. **POST /api/v1/courses** - 과목 등록
+7. **POST /api/v1/courses/enrollments** - 수강신청
+8. **POST /api/v1/grades** - 성적 등록
+9. **GET /api/v1/grades/analytics/course/{id}** - 과목 통계 조회
+
+### curl 사용
 
 ```bash
 # 회원가입
 curl -X POST "http://localhost:8000/api/v1/auth/register" \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "username": "admin", "password": "password123", "full_name": "Admin User"}'
+  -d '{
+    "email": "admin@test.com",
+    "username": "admin",
+    "password": "test1234",
+    "full_name": "관리자"
+  }'
 
 # 로그인
 curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin&password=password123"
-```
+  -d "username=admin&password=test1234"
 
-### 2. 학생 등록
-
-```bash
+# 학생 등록 (토큰 필요)
 curl -X POST "http://localhost:8000/api/v1/students" \
-  -H "Authorization: Bearer {TOKEN}" \
+  -H "Authorization: Bearer {YOUR_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d '{"student_id": "2024001", "first_name": "길동", "last_name": "홍", "email": "hong@example.com"}'
+  -d '{
+    "student_id": "2024001",
+    "first_name": "길동",
+    "last_name": "홍",
+    "email": "hong@test.com"
+  }'
 ```
 
-### 3. 성적 통계 조회
+---
+
+## 개발 현황
+
+### ✅ 구현 완료
+
+- **Phase 1: Infrastructure & Auth**
+  - JWT 기반 인증 시스템
+  - 데이터베이스 설정 및 마이그레이션
+  - 환경 설정 관리
+
+- **Phase 2: Core Business Logic**
+  - 학생/과목/수강신청/성적 CRUD
+  - Pydantic 스키마 검증
+  - 관계형 데이터 모델
+
+- **Phase 3: Analytics Engine**
+  - Pandas 기반 성적 분석
+  - 통계 계산 (평균, 표준편차, Z-Score, GPA)
+  - Matplotlib/Seaborn 차트 생성
+  - ReportLab PDF 리포트
+  - Celery 비동기 작업
+
+### ⚠️ 일부 구현
+
+- **Phase 4: AI & Features**
+  - ✅ 출석 서비스 파일 구조
+  - ❌ 얼굴 인식 기능 (AI 패키지 미설치)
+    - `dlib`, `face_recognition`, `opencv-python` 제외
+    - Windows 환경에서 CMake 빌드 이슈로 인해 제외
+
+### 🚀 향후 계획
+
+1. **얼굴 인식 출석 시스템** (선택 사항)
+   - CMake 설치 후 AI 패키지 추가
+   - 얼굴 인식 API 구현
+
+2. **프론트엔드 개발**
+   - React/Vue.js 웹 애플리케이션
+   - 또는 FastAPI + Jinja2 템플릿
+
+3. **테스트 코드**
+   - Pytest 단위 테스트
+   - API 통합 테스트
+
+---
+
+## 문제 해결
+
+### Windows 환경에서 Alembic UnicodeDecodeError
+
+**문제**: Windows에서 `alembic upgrade head` 실행 시 인코딩 오류 발생
+
+**해결**: Docker 컨테이너를 사용하여 마이그레이션 실행
 
 ```bash
-curl -X GET "http://localhost:8000/api/v1/grades/analytics/course/1?semester=2024-1" \
-  -H "Authorization: Bearer {TOKEN}"
+MSYS_NO_PATHCONV=1 docker run --rm \
+  --network py-sms_default \
+  -v "/c/ROKEY_2526/python_export/Py-SMS:/app" \
+  -w /app \
+  -e DATABASE_URL="postgresql://postgres:postgres@pysms-db:5432/pysms" \
+  python:3.11-slim bash -c \
+  "pip install -q alembic sqlalchemy psycopg2-binary pydantic pydantic-settings && alembic upgrade head"
+```
+
+### AI 패키지 설치 실패 (dlib)
+
+**문제**: `dlib` 빌드 시 CMake 오류
+
+**해결**: `requirements-core.txt` 사용 (AI 패키지 제외)
+
+```bash
+pip install -r requirements-core.txt
 ```
 
 ---
@@ -414,3 +519,14 @@ curl -X GET "http://localhost:8000/api/v1/grades/analytics/course/1?semester=202
 ## 라이선스
 
 이 프로젝트는 MIT 라이선스를 따릅니다.
+
+---
+
+## 기여
+
+이슈 및 풀 리퀘스트는 언제든지 환영합니다.
+
+## 문의
+
+- **Email**: support@pysms.com
+- **GitHub Issues**: https://github.com/your-org/py-sms/issues

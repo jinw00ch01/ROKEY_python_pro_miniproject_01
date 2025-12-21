@@ -1,0 +1,64 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--gray-900);
+}
+
+.toolbar {
+  margin-bottom: var(--spacing-md);
+}
+
+.filterInput {
+  max-width: 250px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--gray-500);
+}
+
+.grade {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.gradeA {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.gradeB {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.gradeC {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.gradeD {
+  background-color: rgba(249, 115, 22, 0.1);
+  color: #ea580c;
+}
+
+.gradeF {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}

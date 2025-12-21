@@ -1,0 +1,77 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Variants */
+.primary {
+  background-color: var(--gray-800);
+  color: var(--gray-50);
+}
+
+.primary:hover {
+  background-color: var(--gray-900);
+}
+
+.secondary {
+  background-color: var(--secondary);
+  color: var(--gray-800);
+}
+
+.secondary:hover {
+  background-color: var(--accent);
+}
+
+.success {
+  background-color: var(--success);
+  color: var(--gray-50);
+}
+
+.warning {
+  background-color: var(--warning);
+  color: var(--gray-900);
+}
+
+.danger {
+  background-color: var(--error);
+  color: var(--gray-50);
+}
+
+/* Sizes */
+.small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+}
+
+.medium {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+}
+
+.large {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1.125rem;
+}

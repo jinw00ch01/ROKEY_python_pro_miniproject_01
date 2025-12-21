@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--primary);
+}
+
+.main {
+  flex: 1;
+  margin-left: 260px;
+}
+
+.content {
+  padding: var(--spacing-lg);
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
+}
+
+.overlay {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}

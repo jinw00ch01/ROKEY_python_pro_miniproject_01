@@ -13,7 +13,9 @@
       "Bash(mkdir:*)",
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
-      "Bash(timeout 10 npm start)"
+      "Bash(timeout 10 npm start)",
+      "Bash(source:*)",
+      "Bash(DATABASE_URL=\"\" POSTGRES_DB=\"\" python manage.py makemigrations --settings=config.settings)"
     ]
   }
 }

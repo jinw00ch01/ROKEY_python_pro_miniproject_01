@@ -11,7 +11,9 @@
       "Bash(alembic upgrade:*)",
       "Bash(MSYS_NO_PATHCONV=1 docker run:*)",
       "Bash(mkdir:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 10 npm start)"
     ]
   }
 }

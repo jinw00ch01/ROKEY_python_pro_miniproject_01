@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, Button } from '../components/common';
+import { Card } from '../components/common';
 import { analyticsService } from '../services/analytics';
 import { DashboardStats, GradeDistribution } from '../types';
 import styles from './Dashboard.module.css';
 
 export const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [distribution, setDistribution] = useState<GradeDistribution | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,10 +35,6 @@ export const Dashboard: React.FC = () => {
     <div className={styles.dashboard}>
       <div className={styles.header}>
         <h1 className={styles.title}>대시보드</h1>
-        <div className={styles.authButtons}>
-          <Button onClick={() => navigate('/login')}>로그인</Button>
-          <Button onClick={() => navigate('/register')} variant="secondary">회원가입</Button>
-        </div>
       </div>
 
       <div className={styles.statsGrid}>

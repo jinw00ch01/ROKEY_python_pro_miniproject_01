@@ -1,0 +1,229 @@
+.page {
+  padding: var(--spacing-lg);
+}
+
+.header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--gray-600);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--gray-500);
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.statCard {
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-sm);
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.summaryCard {
+  padding: var(--spacing-xl);
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+}
+
+.summaryTitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: var(--spacing-sm);
+}
+
+.summaryValue {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.chartCard {
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.chartTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.distribution {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.distributionItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.gradeInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gradeLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+}
+
+.gradeCount {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.barContainer {
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--gray-100);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.gradeCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.gradeCardHeader {
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.gradeCardLabel {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.gradeCardBody {
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.gradeCardCount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xs);
+}
+
+.gradeCardPercentage {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+}
+
+.grade {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.gradeA {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.gradeB {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.gradeC {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.gradeD {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+.gradeF {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.miniDistribution {
+  display: flex;
+  gap: var(--spacing-sm);
+  font-size: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.miniDistribution span {
+  padding: 0.125rem 0.5rem;
+  background-color: var(--gray-100);
+  border-radius: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .miniDistribution {
+    flex-direction: column;
+  }
+}

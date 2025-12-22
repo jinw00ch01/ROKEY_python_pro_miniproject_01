@@ -25,11 +25,26 @@ export const Header: React.FC<HeaderProps> = ({ user, onMenuToggle }) => {
         <h2 className={styles.title}>학생 관리 시스템</h2>
       </div>
       <div className={styles.right}>
-        {user && (
+        {user ? (
           <>
             <span className={styles.userName}>{user.full_name || user.username}</span>
             <button className={styles.logoutButton} onClick={handleLogout}>
               로그아웃
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className={styles.loginButton}
+              onClick={() => navigate('/login')}
+            >
+              로그인
+            </button>
+            <button
+              className={styles.registerButton}
+              onClick={() => navigate('/register')}
+            >
+              회원가입
             </button>
           </>
         )}

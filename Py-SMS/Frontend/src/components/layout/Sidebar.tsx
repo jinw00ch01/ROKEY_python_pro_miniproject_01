@@ -16,8 +16,8 @@ const menuItems: MenuItem[] = [
     path: '/students',
     icon: '👥',
     children: [
-      { label: '전체 학생', path: '/students' },
       { label: '학생 추가', path: '/students/new' },
+      { label: '학생 성적 조회', path: '/students/performance' },
     ],
   },
   {
@@ -25,8 +25,9 @@ const menuItems: MenuItem[] = [
     path: '/courses',
     icon: '📚',
     children: [
-      { label: '전체 과목', path: '/courses' },
+      { label: '수강조회', path: '/courses' },
       { label: '과목 추가', path: '/courses/new' },
+      { label: '수강신청 관리', path: '/enrollments' },
     ],
   },
   {
@@ -34,11 +35,21 @@ const menuItems: MenuItem[] = [
     path: '/grades',
     icon: '📝',
     children: [
-      { label: '전체 성적', path: '/grades' },
+      { label: '성적조회', path: '/grades' },
       { label: '성적 추가', path: '/grades/new' },
+      { label: '성적 통계', path: '/grades/statistics' },
     ],
   },
-  { label: '분석', path: '/analytics', icon: '📈' },
+  {
+    label: '분석',
+    path: '/analytics',
+    icon: '📈',
+    children: [
+      { label: '등급 분포', path: '/analytics/grade-distribution' },
+      { label: '학생 성적 분석', path: '/analytics/student-performance' },
+      { label: '과목별 통계', path: '/analytics/course-stats' },
+    ],
+  },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -80,6 +91,7 @@ export const Sidebar: React.FC = () => {
         ) : (
           <NavLink
             to={item.path}
+            end
             className={({ isActive }) =>
               `${styles.menuLink} ${isActive ? styles.active : ''}`
             }

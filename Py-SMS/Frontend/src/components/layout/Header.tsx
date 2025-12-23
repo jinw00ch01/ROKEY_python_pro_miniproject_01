@@ -22,7 +22,6 @@ export const Header: React.FC<HeaderProps> = ({ user, onMenuToggle }) => {
         <button className={styles.menuButton} onClick={onMenuToggle} aria-label="Toggle menu">
           ☰
         </button>
-        <h2 className={styles.title}>학생 관리 시스템</h2>
       </div>
       <div className={styles.right}>
         {user ? (

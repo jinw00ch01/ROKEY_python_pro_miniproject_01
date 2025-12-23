@@ -30,13 +30,23 @@ export const StudentPerformanceAnalytics: React.FC = () => {
     try {
       setLoading(true);
       const response = await api.get('/analytics/students/performance/');
-      const performancesWithId = response.data.map((perf: any, index: number) => ({
+      const data = response.data;
+
+      let performancesList = [];
+      if (Array.isArray(data)) {
+        performancesList = data;
+      } else if (data && Array.isArray(data.results)) {
+        performancesList = data.results;
+      }
+
+      const performancesWithId = performancesList.map((perf: any, index: number) => ({
         ...perf,
         id: perf.id ?? index,
       }));
       setPerformances(performancesWithId);
     } catch (error) {
       console.error('Failed to fetch student performances:', error);
+      setPerformances([]);
     } finally {
       setLoading(false);
     }

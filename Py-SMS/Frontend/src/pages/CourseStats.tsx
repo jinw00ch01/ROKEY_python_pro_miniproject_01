@@ -30,13 +30,23 @@ export const CourseStats: React.FC = () => {
     try {
       setLoading(true);
       const response = await api.get('/analytics/courses/');
-      const coursesWithId = response.data.map((course: any, index: number) => ({
+      const data = response.data;
+
+      let coursesList = [];
+      if (Array.isArray(data)) {
+        coursesList = data;
+      } else if (data && Array.isArray(data.results)) {
+        coursesList = data.results;
+      }
+
+      const coursesWithId = coursesList.map((course: any, index: number) => ({
         ...course,
         id: course.id ?? index,
       }));
       setCourses(coursesWithId);
     } catch (error) {
       console.error('Failed to fetch course analytics:', error);
+      setCourses([]);
     } finally {
       setLoading(false);
     }

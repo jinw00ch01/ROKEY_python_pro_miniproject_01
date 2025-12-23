@@ -27,9 +27,17 @@ export const GradeStatistics: React.FC = () => {
       const response = await api.get('/grades/statistics/', {
         params: { semester: semesterFilter },
       });
-      setStats(response.data);
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setStats(data);
+      } else if (data && Array.isArray(data.results)) {
+        setStats(data.results);
+      } else {
+        setStats([]);
+      }
     } catch (error) {
       console.error('Failed to fetch statistics:', error);
+      setStats([]);
     } finally {
       setLoading(false);
     }

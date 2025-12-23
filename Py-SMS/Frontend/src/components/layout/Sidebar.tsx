@@ -10,11 +10,10 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { label: '대시보드', path: '/', icon: '📊' },
+  { label: '대시보드', path: '/' },
   {
     label: '학생',
     path: '/students',
-    icon: '👥',
     children: [
       { label: '학생 추가', path: '/students/new' },
       { label: '학생 성적 조회', path: '/students/performance' },
@@ -23,7 +22,6 @@ const menuItems: MenuItem[] = [
   {
     label: '과목',
     path: '/courses',
-    icon: '📚',
     children: [
       { label: '수강조회', path: '/courses' },
       { label: '과목 추가', path: '/courses/new' },
@@ -33,7 +31,6 @@ const menuItems: MenuItem[] = [
   {
     label: '성적',
     path: '/grades',
-    icon: '📝',
     children: [
       { label: '성적조회', path: '/grades' },
       { label: '성적 추가', path: '/grades/new' },
@@ -43,7 +40,6 @@ const menuItems: MenuItem[] = [
   {
     label: '분석',
     path: '/analytics',
-    icon: '📈',
     children: [
       { label: '등급 분포', path: '/analytics/grade-distribution' },
       { label: '학생 성적 분석', path: '/analytics/student-performance' },
@@ -76,7 +72,6 @@ export const Sidebar: React.FC = () => {
               onClick={() => toggleExpand(item.label)}
               style={{ paddingLeft: `${16 + depth * 16}px` }}
             >
-              {item.icon && <span className={styles.icon}>{item.icon}</span>}
               <span className={styles.label}>{item.label}</span>
               <span className={`${styles.arrow} ${isExpanded ? styles.expanded : ''}`}>
                 ▶
@@ -97,7 +92,6 @@ export const Sidebar: React.FC = () => {
             }
             style={{ paddingLeft: `${16 + depth * 16}px` }}
           >
-            {item.icon && <span className={styles.icon}>{item.icon}</span>}
             <span className={styles.label}>{item.label}</span>
           </NavLink>
         )}
